@@ -1,0 +1,21 @@
+<div class="list-page">
+    <h3>Historical Data</h3>
+    <div *ngIf="isLoding">Loding....</div>
+    <table *ngIf="!isLoding">
+        <thead>
+          <tr>
+            <th>Currency</th>
+            <th>Rate</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+    
+        <tbody>
+          <tr *ngFor="let rate of rates">
+            <td>{{rate.currency}}</td>
+            <td>{{rate.price}}</td>
+            <td>{{rate.dayOfPrice | date}}</td>  
+          </tr>
+        </tbody>
+      </table>
+</div>
