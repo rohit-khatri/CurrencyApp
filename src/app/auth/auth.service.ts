@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthModel } from './auth.model';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,14 @@ import { Router } from '@angular/router';
 export class AuthService {
     
   private isAuthenticated: boolean = false;
+  private authStatusListener = new Subject<boolean>();
   
   constructor(private router: Router) { }
 
   login(formGroup: FormGroup) {
     const authData: AuthModel = formGroup.value;
     this.isAuthenticated = true;
+    this.authStatusListener.next(true);
     const now = new Date();
     const expirationDate = new Date(now.getTime() + 12000);
     this.saveAuthData(btoa(formGroup.value), btoa(authData.username), expirationDate);
@@ -23,6 +26,7 @@ export class AuthService {
 
   logout() {
     this.isAuthenticated = false;
+    this.authStatusListener.next(false);
     this.clearAuthData();
     this.router.navigate(['']);
   }
@@ -58,5 +62,9 @@ export class AuthService {
 
   getToken() {
     return sessionStorage.getItem('token');
+  }
+
+  getAuthStatusListner() {
+    return this.authStatusListener.asObservable();
   }
 }
